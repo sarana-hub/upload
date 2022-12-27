@@ -47,9 +47,10 @@ public class ItemController {
         item.setImageFiles(storeImageFiles);
         itemRepository.save(item);
 
-        redirectAttributes.addAttribute("itemId", item.getId());
+        redirectAttributes.addAttribute("id", item.getId());
+        redirectAttributes.addAttribute("status", true);
 
-        return "redirect:/items/{itemId}";
+        return "redirect:/items/{id}";
     }
 
     /** 상품 상세(조회) */
@@ -93,5 +94,23 @@ public class ItemController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
+    }
+
+
+    /*추가*/
+    /** 상품 수정 */
+    @GetMapping("/items/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Item item = itemRepository.findById(id);
+        model.addAttribute("item", item);
+        return "editForm";    //수정용 폼 뷰를 호출
+    }
+
+    /** 상품 수정 처리 */
+    @PostMapping("/items/{id}/edit")
+    public String edit(@PathVariable Long id, @ModelAttribute Item item) {
+        itemRepository.update(id, item);
+        return "redirect:/items/{id}";
+        //(뷰 템플릿을 호출하는 대신에) 상품 상세 화면으로 이동하도록 "리다이렉트"를 호출
     }
 }
