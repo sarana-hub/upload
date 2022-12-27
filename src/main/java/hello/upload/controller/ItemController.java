@@ -28,17 +28,10 @@ public class ItemController {
     private final ItemRepository itemRepository;
     private final FileStore fileStore;
 
-    /** 상품 목록 */
-    @GetMapping("/items")
-    public String items(Model model) {
-        List<Item> items = itemRepository.findAll();    //모든 item 조회
-        model.addAttribute("items", items);  //items(모든 item)을 모델에 담는다
-        return "items";   //뷰 템플릿 호출
-    }
-
     /** 상품 등록 폼 */
     @GetMapping("/items/new")
     public String newItem(@ModelAttribute ItemForm form) {
+
         return "item-form";
     }
 
@@ -53,7 +46,9 @@ public class ItemController {
         item.setAttachFile(attachFile);
         item.setImageFiles(storeImageFiles);
         itemRepository.save(item);
+
         redirectAttributes.addAttribute("itemId", item.getId());
+
         return "redirect:/items/{itemId}";
     }
 
@@ -64,6 +59,16 @@ public class ItemController {
         model.addAttribute("item", item);
         return "item-view";
     }
+
+    /*추가*/
+    /** 상품 목록 */
+    @GetMapping("/items")
+    public String items(Model model) {
+        List<Item> items = itemRepository.findAll();    //모든 item 조회
+        model.addAttribute("items", items);  //items(모든 item)을 모델에 담는다
+        return "items";   //뷰 템플릿 호출
+    }
+
 
     @ResponseBody
     @GetMapping("/images/{filename}")

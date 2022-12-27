@@ -32,9 +32,9 @@
                 <td>
                     <img th:each="imageFile : ${item.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|"
                          width="100" height="100"/></td>
-                <td><a href="item.html" th:href="@{/basic/items/{itemId}(itemId=${item.id})}"
-                       th:text="${item.id}">회원id</a></td>
-                <td><a href="item.html" th:href="@{|/basic/items/${item.id}|}"
+                <td><a href="item-view.html" th:href="@{/items/{itemId}(itemId=${item.id})}"
+                       th:text="${item.id}">id</a></td>
+                <td><a href="item-view.html" th:href="@{|/items/${item.id}|}"
                        th:text="${item.itemName}">상품명</a></td>
             </tr>
             </tbody>
