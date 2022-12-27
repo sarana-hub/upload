@@ -12,6 +12,18 @@
     첨부파일: <a th:if="${item.attachFile}" th:href="|/attach/${item.id}|"
              th:text="${item.getAttachFile().getUploadFileName()}" /><br/>
     <img th:each="imageFile : ${item.imageFiles}" th:src="|/images/${imageFile.getStoreFileName()}|" width="300" height="300"/>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    onclick="location.href='items.html'"
+                    th:onclick="|location.href='@{/items}'|"
+                    type="button">목록으로</button>
+        </div>
+    </div>
+
 </div> <!-- /container -->
 </body>
 </html>
