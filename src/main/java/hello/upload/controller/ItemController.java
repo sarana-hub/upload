@@ -28,6 +28,22 @@ public class ItemController {
     private final ItemRepository itemRepository;
     private final FileStore fileStore;
 
+    /** 상품 상세(조회) */
+    @GetMapping("/items/{id}")
+    public String items(@PathVariable Long id, Model model) {
+        Item item = itemRepository.findById(id);
+        model.addAttribute("item", item);
+        return "item-view";
+    }
+
+    /** 상품 목록 */
+    @GetMapping("/items")
+    public String items(Model model) {
+        List<Item> items = itemRepository.findAll();    //모든 item 조회
+        model.addAttribute("items", items);  //items(모든 item)을 모델에 담는다
+        return "items";   //뷰 템플릿 호출
+    }
+
     /** 상품 등록 폼 */
     @GetMapping("/items/new")
     public String newItem(@ModelAttribute ItemForm form) {
@@ -53,29 +69,37 @@ public class ItemController {
         return "redirect:/items/{id}";
     }
 
-    /** 상품 상세(조회) */
-    @GetMapping("/items/{id}")
-    public String items(@PathVariable Long id, Model model) {
-        Item item = itemRepository.findById(id);
-        model.addAttribute("item", item);
-        return "item-view";
-    }
-
-    /*추가*/
-    /** 상품 목록 */
-    @GetMapping("/items")
-    public String items(Model model) {
-        List<Item> items = itemRepository.findAll();    //모든 item 조회
-        model.addAttribute("items", items);  //items(모든 item)을 모델에 담는다
-        return "items";   //뷰 템플릿 호출
-    }
-
 
     @ResponseBody
     @GetMapping("/images/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.getFullPath(filename));
     }
+
+    /*추가*/
+    /** 상품 수정 */
+    @GetMapping("/items/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Item item = itemRepository.findById(id);
+        model.addAttribute("item", item);
+        return "editForm";    //수정용 폼 뷰를 호출
+    }
+
+    /** 상품 수정 처리 */
+    @PostMapping("/items/{id}/edit")
+    public String edit(@PathVariable Long id, @ModelAttribute ItemForm form) throws IOException {
+        List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
+
+        Item item = itemRepository.findById(id);
+        item.setItemName(form.getItemName());
+        item.setImageFiles(storeImageFiles);
+
+        itemRepository.update(id, item);
+
+        return "redirect:/items/{id}";
+        //(뷰 템플릿을 호출하는 대신에) 상품 상세 화면으로 이동하도록 "리다이렉트"를 호출
+    }
+
 
     /*@GetMapping("/attach/{itemId}")
     public ResponseEntity<Resource> downloadAttach(@PathVariable Long itemId) throws MalformedURLException {
@@ -96,21 +120,4 @@ public class ItemController {
                 .body(resource);
     }*/
 
-
-    /*추가*/
-    /** 상품 수정 */
-    @GetMapping("/items/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
-        Item item = itemRepository.findById(id);
-        model.addAttribute("item", item);
-        return "editForm";    //수정용 폼 뷰를 호출
-    }
-
-    /** 상품 수정 처리 */
-    @PostMapping("/items/{id}/edit")
-    public String edit(@PathVariable Long id, @ModelAttribute Item item) {
-        itemRepository.update(id, item);
-        return "redirect:/items/{id}";
-        //(뷰 템플릿을 호출하는 대신에) 상품 상세 화면으로 이동하도록 "리다이렉트"를 호출
-    }
 }

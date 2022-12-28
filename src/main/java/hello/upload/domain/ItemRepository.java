@@ -28,5 +28,6 @@ public class ItemRepository {
     public void update(Long id, Item updateParam) {
         Item findItem=findById(id);
         findItem.setItemName(updateParam.getItemName());
+        findItem.setImageFiles(updateParam.getImageFiles());
     }
 }
