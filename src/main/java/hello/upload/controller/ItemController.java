@@ -87,15 +87,18 @@ public class ItemController {
 
     /** 상품 수정 처리 */
     @PostMapping("/items/{id}/edit")
-    public String edit(@PathVariable Long id, @ModelAttribute ItemForm form) throws IOException {
+    public String edit(@PathVariable Long id, @ModelAttribute ItemForm form,
+                       RedirectAttributes redirectAttributes) throws IOException {
         List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
 
         Item item = itemRepository.findById(id);
         item.setItemName(form.getItemName());
-        item.setImageFiles(storeImageFiles);
+        //item.setImageFiles(storeImageFiles);
 
         itemRepository.update(id, item);
 
+        redirectAttributes.addAttribute("itemId", item.getId());
+        redirectAttributes.addAttribute("status", true);
         return "redirect:/items/{id}";
         //(뷰 템플릿을 호출하는 대신에) 상품 상세 화면으로 이동하도록 "리다이렉트"를 호출
     }
