@@ -20,10 +20,12 @@ public class FileStore {
     @Value("${file.dir}")
     private String fileDir;
 
+    //파일명의 위치
     public String getFullPath(String filename) {
         return fileDir + filename;
     }
 
+    //이미지파일을 담는다
     public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
         List<UploadFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
@@ -38,7 +40,7 @@ public class FileStore {
         if (multipartFile.isEmpty()) {
             return null;
         }
-        String originalFilename = multipartFile.getOriginalFilename();  //image.jpg
+        String originalFilename = multipartFile.getOriginalFilename();  //image.jpg(사용자가 올린 파일명)
         String storeFileName = createStoreFileName(originalFilename);   //서버에 저장하는 파일명
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
         return new UploadFile(originalFilename, storeFileName);
