@@ -93,7 +93,9 @@ public class ItemController {
 
         Item item = itemRepository.findById(id);
         item.setItemName(form.getItemName());
-        //item.setImageFiles(storeImageFiles);
+        if(!storeImageFiles.isEmpty()) {
+            item.setImageFiles(storeImageFiles);
+        }
 
         itemRepository.update(id, item);
 
